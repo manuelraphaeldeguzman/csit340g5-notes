@@ -15,6 +15,8 @@ const startingNotes = [
 ]
 
 function Notes() {
+
+    const [formData, setFormData] = useState({ title: '', body: '', })
     const [notes, setNotes] = useState(() => {
         const saved = localStorage.getItem('notes')
         return saved ? JSON.parse(saved) : startingNotes
@@ -26,14 +28,18 @@ function Notes() {
         localStorage.setItem('notes', JSON.stringify(notes))
     }, [notes])
 
+    useEffect(() => {
+        const id = setTimeout(() => {
+            localStorage.setItem('draft', JSON.stringify(formData))
+        }, 1000)
+        return () => clearTimeout(id)
+    }, [formData])
+
     const filteredNotes = notes.filter((note) =>
         note.title.toLowerCase().includes(search.toLowerCase())
     )
 
-    const [formData, setFormData] = useState({
-        title: '',
-        body: '',
-    })
+
 
     function handleChange(event) {
         const { name, value } = event.target
